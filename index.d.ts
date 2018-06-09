@@ -2,14 +2,14 @@ import Waterline = require('waterline');
 
 declare namespace Sails {
 
-	export type Model<T extends ModelAttributes> = {
+	export type Model = Waterline.Model & {
 		friendlyName?: string;
 		description?: string;
 		extendedDescription?: string;
 		attributes: ModelAttributes;
-
-		customToJSON?: () => any;
+		customToJSON?: () => Model;
 	}
+
 
 	export interface ModelAttribute {
 		type: string;
@@ -22,41 +22,34 @@ declare namespace Sails {
 		[key: string]: ModelAttribute;
 	}
 
-	export type MachineAction = {
+	export type Actions2 = {
 		friendlyName?: string;
 		description?: string;
 		extendedDescription?: string;
-
-		inputs: MachineInputs;
-		exits: MachineExits;
-
-		fn: MachineFn;
-
+		fn: Fn;
 	}
 
-	export type MachineInput = {
-		type: string;
+	export type Input = {
+		type: "string" | "number" | "boolean" | "ref" | any;
 		description?: string;
+		extendedDescription?: string;
 		required?: boolean;
-
-		isValid?: () => boolean;
+		example?: any;
 	}
 
-	export type MachineInputs = {
-		[key: string]: MachineInput
-	};
-
-	export type MachineExit = {
+	export type Exit = {
 		responseType?: string;
-		statusCode?: number;
-		description?: string;
+		statusCode?: string;
 	}
 
-	export type MachineExits = {
-		success?(): void;
+	export type Inputs = {
+		[key: string]: Input | any
 	};
 
-	export type MachineFn = (inputs: MachineInputs | any, exits: MachineExits | any) => void;
-	export type Helper = MachineAction;
-	export type Policy = (req: Express.Request, response: Express.Response, next: void) => void;
+	export type Exits = {
+		[key: string]: Exit | any;
+		success(): void;
+	}
+
+	export type Fn = (inputs: any, exits: any) => void;
 }

@@ -1,34 +1,31 @@
 import { Sails } from "./index";
 
-export const MyAction: Sails.MachineAction = {
+export const MyAction = <Sails.Actions2>{
   friendlyName: 'Simple Sails Machine Action',
   description: 'I am a Sails Action2 Machine',
   inputs: {
-    phrase: {
-      type: 'string',
-      required: true,
-    }
   },
   exits: {
   },
-  fn: async function (inputs: Sails.MachineInputs | any, exits: Sails.MachineExits | any) {
-    const phrase = inputs.phase;
+  fn: async function (inputs: any, exits: any) {
+    const record = await MyModel.findOne();
 
     return exits.success();
   }
 };
 
-export const MyModelAttributes: Sails.ModelAttributes = {
-  name: {
-    type: 'string',
-    required: true,
-  }
-};
 
-export const MyModel: Sails.Model<typeof MyModelAttributes> = {
+export const MyModel = <Sails.Model>{
   friendlyName: 'My Sails Model',
   description: 'This is my Sails Model',
   extendedDescription: `
   Sails model typed in Typescript`,
-  attributes: MyModelAttributes,
+  attributes: <Sails.ModelAttributes>{
+    name: {
+      type: 'string',
+      required: true,
+    }
+  }
 }
+
+
