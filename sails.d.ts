@@ -30,7 +30,7 @@ declare module Sails {
      *
      * @param criteria
      */
-    archive(criteria: Object): void;
+    archive(criteria: T | any): void;
 
     /**
      *
@@ -42,19 +42,19 @@ declare module Sails {
      *
      * @param criteria
      */
-    count(criteria: Object): number;
+    count(criteria: T ): number;
 
     /**
      *
      * @param initialValues
      */
-    create(initialValues: Object): void;
+    create(initialValues: T): void;
 
     /**
      *
      * @param initialValues
      */
-    createEach(initialValues: Array<Object>): void;
+    createEach(initialValues: Array<T>): QueryBuilder<T>;
 
     /**
      *
@@ -65,7 +65,7 @@ declare module Sails {
     /**
      *
      */
-    find<T>(): QueryBuilder<T>;
+    find(): QueryBuilder<T>;
 
     /**
      *
@@ -75,20 +75,20 @@ declare module Sails {
     /**
      *
      */
-    find(id: string): QueryBuilder | QueryResult;
+    find(id: string): QueryBuilder<T> | WaterlinePromise<Record<T>>;
 
     /**
      *
      * @param criteria
      */
-    findOne(criteria: Object): QueryBuilder | Promise<QueryResult>;
+    findOne(criteria: Object): QueryBuilder<T> | WaterlinePromise<Record<T>>;
 
     /**
      *
      * @param criteria
      * @param initialValues
      */
-    findOrCreate(criteria: Object, initialValues: Object): QueryBuilder | QueryResult
+    findOrCreate(criteria: Object, initialValues: Object): QueryBuilder<T> | WaterlinePromise<Record<T>>;
 
     /**
      *
@@ -111,7 +111,7 @@ declare module Sails {
     /**
      *
      */
-    stream(criteria: Object);
+    stream(criteria: T);
 
     /**
      *
@@ -121,7 +121,7 @@ declare module Sails {
     /**
      *
      */
-    update();
+    update(criteria: T, values: any): QueryBuilder<T>;
 
     /**
      *
@@ -142,6 +142,7 @@ declare module Sails {
     id: string;
     createdAt: number;
     updatedAt: number;
+    [key: string]: any;
   }
 
 
@@ -172,7 +173,11 @@ declare module Sails {
     fn: ActionFunction;
   }
 
-  export class QueryBuilder<T> extends Promise<T> {
+  export class Exits {
+    success(): void;
+  }
+
+  export class QueryBuilder<T> extends WaterlinePromise<T> {
     /**
      *
      */
@@ -191,7 +196,7 @@ declare module Sails {
     /**
      *
      */
-    fetch(): Array<QueryResult<T>> | QueryResult<T>
+    fetch(): Array<Record<T>> | Record<T>
 
     /**
      *
@@ -212,7 +217,7 @@ declare module Sails {
      *
      * @param collection
      */
-    populate(collection: string): QueryBuilder<T> | Array<QueryResult<T>> | QueryResult<T>;
+    populate(collection: string): QueryBuilder<T> | Array<Record<T>> | Record<T>;
 
     /**
      *
@@ -245,16 +250,14 @@ declare module Sails {
     where();
   }
 
-  export class QueryResult<T> extends Record<T> { }
-
   export class QueryStream<T> {
-    eachRecord(iterator: (record: QueryResult<T>, next: Function) => void);
-    eachBatch(iterator: (record: QueryResult<T>, next: Function) => void);
+    eachRecord(iterator: (record: Record<T>, next: Function) => void);
+    eachBatch(iterator: (record: Record<T>, next: Function) => void);
   }
 
   export class WaterlinePromise<T> extends Promise<T>{
-    exec(callback: (error: Error, results: Array<QueryResult<T>>) => void);
-    exec(callback: (error: Error, result: QueryResult<T>) => void);
+    exec(callback: (error: Error, results: Array<Record<T>>) => void);
+    exec(callback: (error: Error, result: Record<T>) => void);
   }
 
   type ActionFunction = (inputs: any, exits: any) => void;
