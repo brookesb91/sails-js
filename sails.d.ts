@@ -13,8 +13,10 @@ declare module Express {
 declare module Sails {
 
 
-  export interface Model extends Describable {
+  export interface Model {
     attributes: Object;
+    description?: string;
+    extendedDescription?: string;
 
     /**
      *
@@ -154,6 +156,7 @@ declare module Sails {
         description?: string;
         extendedDescription?: string;
         required?: boolean;
+        responseType?: string;
       }
     }
   }

@@ -6,5 +6,6 @@ export const TestMachine: Sails.MachineAction = {
     myOtherInput: {
       type: 'number',
     }
-  }
+  },
+  exits: {},
 };
