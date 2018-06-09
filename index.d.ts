@@ -2,23 +2,25 @@ import Waterline = require('waterline');
 
 declare namespace Sails {
 
-
-	export type Model = Waterline.Model & {
+	export type Model<T extends ModelAttributes> = {
+		friendlyName?: string;
 		description?: string;
 		extendedDescription?: string;
-		attributes?: ModelAttributes;
+		attributes: ModelAttributes;
 
-		customToJSON(): any;
+		customToJSON?: () => any;
 	}
 
-	export type ModelAttribute = {
+	export interface ModelAttribute {
 		type: string;
 		required?: boolean;
 		isIn?: Array<string>;
-		unique: boolean;
-	};
+		unique?: boolean;
+	}
 
-	export type ModelAttributes = { [key: string]: ModelAttribute; };
+	export class ModelAttributes {
+		[key: string]: ModelAttribute;
+	}
 
 	export type MachineAction = {
 		friendlyName?: string;
@@ -40,7 +42,9 @@ declare namespace Sails {
 		isValid?: () => boolean;
 	}
 
-	export type MachineInputs = { [key: string]: MachineInput };
+	export type MachineInputs = {
+		[key: string]: MachineInput
+	};
 
 	export type MachineExit = {
 		responseType?: string;
@@ -52,5 +56,7 @@ declare namespace Sails {
 		success?(): void;
 	};
 
-	export type MachineFn = (inputs: MachineInputs, exits: MachineExits) => void;
+	export type MachineFn = (inputs: MachineInputs | any, exits: MachineExits | any) => void;
+	export type Helper = MachineAction;
+	export type Policy = (req: Express.Request, response: Express.Response, next: void) => void;
 }
