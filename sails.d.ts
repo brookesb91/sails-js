@@ -13,8 +13,8 @@ declare module Express {
 declare module Sails {
 
 
-  export interface Model {
-    attributes: ModelAttributes;
+  export class Model<T extends ModelAttributes> {
+    attributes: T
     description?: string;
     extendedDescription?: string;
 
@@ -65,12 +65,12 @@ declare module Sails {
     /**
      *
      */
-    find(): QueryBuilder | QueryResult;
+    find<T>(): QueryBuilder<T>;
 
     /**
      *
      */
-    find(criteria: Object): QueryBuilder | QueryResult;
+    find(criteria: Object): QueryBuilder<T>;
 
     /**
      *
@@ -81,7 +81,7 @@ declare module Sails {
      *
      * @param criteria
      */
-    findOne(criteria: Object): QueryBuilder | QueryResult;
+    findOne(criteria: Object): QueryBuilder | Promise<QueryResult>;
 
     /**
      *
@@ -172,7 +172,7 @@ declare module Sails {
     fn: ActionFunction;
   }
 
-  export class QueryBuilder {
+  export class QueryBuilder<T> extends Promise<T> {
     /**
      *
      */
@@ -191,7 +191,7 @@ declare module Sails {
     /**
      *
      */
-    fetch(): Array<QueryResult> | QueryResult
+    fetch(): Array<QueryResult<T>> | QueryResult<T>
 
     /**
      *
@@ -212,7 +212,7 @@ declare module Sails {
      *
      * @param collection
      */
-    populate(collection: string): QueryBuilder | Array<QueryResult> | QueryResult;
+    populate(collection: string): QueryBuilder<T> | Array<QueryResult<T>> | QueryResult<T>;
 
     /**
      *
@@ -223,11 +223,6 @@ declare module Sails {
      *
      */
     sort();
-
-    /**
-     *
-     */
-    then();
 
     /**
      *
@@ -250,11 +245,16 @@ declare module Sails {
     where();
   }
 
-  export class QueryResult extends Record<any> {}
+  export class QueryResult<T> extends Record<T> { }
 
   export class QueryStream<T> {
-    eachRecord(iterator: (record: QueryResult, next: Function) => void);
-    eachBatch(iterator: (record: QueryResult, next: Function) => void);
+    eachRecord(iterator: (record: QueryResult<T>, next: Function) => void);
+    eachBatch(iterator: (record: QueryResult<T>, next: Function) => void);
+  }
+
+  export class WaterlinePromise<T> extends Promise<T>{
+    exec(callback: (error: Error, results: Array<QueryResult<T>>) => void);
+    exec(callback: (error: Error, result: QueryResult<T>) => void);
   }
 
   type ActionFunction = (inputs: any, exits: any) => void;

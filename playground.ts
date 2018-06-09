@@ -8,7 +8,7 @@ export const TestMachine: Sails.MachineAction = {
     }
   },
   exits: {},
-  fn: (inputs, exits) => {
+  fn: async (inputs: any, exits: any) => {
 
   }
 };
