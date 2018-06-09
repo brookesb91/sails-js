@@ -3,39 +3,128 @@
  */
 declare module Express {
   export interface Request {
-    params: {
-      all(): Object
-    }
+    allParams();
   }
   export interface Response {
     view(route: string);
   }
 }
 
- declare module Sails {
+declare module Sails {
 
 
   export interface Model extends Describable {
     attributes: Object;
 
-    addToCollection(id: number, collection: string, associations: Array<number> | number):void;
+    /**
+     *
+     * @param parentId The primary key value for the parent record
+     * @param association The name of the plural association
+     * @param childIds The primary key value(s) for the child records
+     */
+    addToCollection(parentId: number | string, association: string, childIds: Array<number | string> | number | string): void;
 
-    archive();
+    /**
+     *
+     * @param criteria
+     */
+    archive(criteria: Object): void;
 
-    avg();
+    /**
+     *
+     * @param numericAttrName
+     */
+    avg(numericAttrName: string): number;
 
-    count();
+    /**
+     *
+     * @param criteria
+     */
+    count(criteria: Object): number;
 
-    create();
+    /**
+     *
+     * @param initialValues
+     */
+    create(initialValues: Object): void;
 
-    createEach();
+    /**
+     *
+     * @param initialValues
+     */
+    createEach(initialValues: Array<Object>): void;
 
-    destroy();
+    /**
+     *
+     * @param criteria
+     */
+    destroy(criteria: Object): void;
 
-    find();
+    /**
+     *
+     */
+    find(): QueryBuilder | QueryResult;
 
-    removeFromCollection(id: number, collection: string, associations: Array<number> | number): void;
+    /**
+     *
+     */
+    find(criteria: Object): QueryBuilder | QueryResult;
 
+    /**
+     *
+     */
+    find(id: string): QueryBuilder | QueryResult;
+
+    /**
+     *
+     * @param criteria
+     */
+    findOne(criteria: Object): QueryBuilder | QueryResult;
+
+    /**
+     *
+     * @param criteria
+     * @param initialValues
+     */
+    findOrCreate(criteria: Object, initialValues: Object): QueryBuilder | QueryResult
+
+    /**
+     *
+     */
+    getDataStore();
+
+    /**
+     *
+     * @param parentId
+     * @param association
+     * @param childIds
+     */
+    removeFromCollection(parentId: number | string, association: string, childIds: Array<number | string> | number | string): void;
+
+    /**
+     *
+     */
+    replaceCollection();
+
+    /**
+     *
+     */
+    stream();
+
+    /**
+     *
+     */
+    sum();
+
+    /**
+     *
+     */
+    update();
+
+    /**
+     *
+     */
+    validate();
   }
 
   export class Record {
@@ -45,8 +134,8 @@ declare module Express {
   }
 
   export interface Actions2 extends Describable {
-    inputs?: Map<any, Input>;
-    exits?: Map<any, Exit>;
+    inputs?: { [key: string]: Input };
+    exits?: { [key: string]: Exit };
   }
 
   export interface Input {
@@ -67,9 +156,81 @@ declare module Express {
   }
 
   export class QueryBuilder extends Promise<any> {
+    /**
+     *
+     */
+    catch();
+
+    /**
+     *
+     */
+    decrypt();
+
+    /**
+     *
+     */
+    exec();
+
+    /**
+     *
+     */
     fetch(): Promise<Array<Sails.QueryResult>>;
 
-    populate(collection: string):QueryBuilder;
+    /**
+     *
+     */
+    intercept();
+
+    /**
+     *
+     */
+    limit();
+
+    /**
+     *
+     */
+    meta();
+
+    /**
+     *
+     * @param collection
+     */
+    populate(collection: string): QueryBuilder;
+
+    /**
+     *
+     */
+    skip();
+
+    /**
+     *
+     */
+    sort();
+
+    /**
+     *
+     */
+    then();
+
+    /**
+     *
+     */
+    tolerate();
+
+    /**
+     *
+     */
+    toPromise();
+
+    /**
+     *
+     */
+    usingConnection();
+
+    /**
+     *
+     */
+    where();
   }
 
   export class QueryResult extends Record {
