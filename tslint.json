@@ -5,7 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
-        "arrow-return-shorthand": true,
+        "arrow-return-shorthand": false,
         "callable-types": true,
         "class-name": true,
         "comment-format": [

@@ -14,7 +14,7 @@ declare module Sails {
 
 
   export interface Model {
-    attributes: Object;
+    attributes: ModelAttributes;
     description?: string;
     extendedDescription?: string;
 
@@ -106,12 +106,12 @@ declare module Sails {
     /**
      *
      */
-    replaceCollection();
+    replaceCollection(parentId: number | string, association: string, childIds: Array<number | string> | number | string): void;
 
     /**
      *
      */
-    stream();
+    stream(criteria: Object);
 
     /**
      *
@@ -129,10 +129,19 @@ declare module Sails {
     validate();
   }
 
-  export class Record {
-    id?: string;
-    createdAt?: number;
-    updatedAt?: number;
+  export interface ModelAttributes {
+    [key: string]: {
+      type: string;
+      description?: string;
+      required?: boolean;
+      isIn?: Array<string>;
+    }
+  }
+
+  export class Record<T> {
+    id: string;
+    createdAt: number;
+    updatedAt: number;
   }
 
 
@@ -158,10 +167,12 @@ declare module Sails {
         required?: boolean;
         responseType?: string;
       }
-    }
+    };
+
+    fn: ActionFunction;
   }
 
-  export class QueryBuilder extends Promise<any> {
+  export class QueryBuilder {
     /**
      *
      */
@@ -180,7 +191,7 @@ declare module Sails {
     /**
      *
      */
-    fetch(): Promise<Array<Sails.QueryResult>>;
+    fetch(): Array<QueryResult> | QueryResult
 
     /**
      *
@@ -201,7 +212,7 @@ declare module Sails {
      *
      * @param collection
      */
-    populate(collection: string): QueryBuilder;
+    populate(collection: string): QueryBuilder | Array<QueryResult> | QueryResult;
 
     /**
      *
@@ -239,9 +250,13 @@ declare module Sails {
     where();
   }
 
-  export class QueryResult extends Record {
+  export class QueryResult extends Record<any> {}
 
+  export class QueryStream<T> {
+    eachRecord(iterator: (record: QueryResult, next: Function) => void);
+    eachBatch(iterator: (record: QueryResult, next: Function) => void);
   }
 
+  type ActionFunction = (inputs: any, exits: any) => void;
   type Policy = (req: any, res: any, next: any) => void;
 }

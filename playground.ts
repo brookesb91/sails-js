@@ -8,4 +8,7 @@ export const TestMachine: Sails.MachineAction = {
     }
   },
   exits: {},
+  fn: (inputs, exits) => {
+
+  }
 };
