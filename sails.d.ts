@@ -133,26 +133,29 @@ declare module Sails {
     updatedAt?: number;
   }
 
-  export interface Actions2 extends Describable {
-    inputs?: { [key: string]: Input };
-    exits?: { [key: string]: Exit };
-  }
 
-  export interface Input {
-    type: string | any;
-    required?: boolean;
-  }
-
-  export interface Exit {
-    responseType?: string;
-    statusCode?: number;
-  }
-
-
-  export interface Describable {
+  export interface MachineAction {
     friendlyName?: string;
     description?: string;
     extendedDescription?: string;
+
+    inputs: {
+      [key: string]: {
+        type: string;
+        description?: string;
+        extendedDescription?: string;
+        required?: boolean;
+      }
+    };
+
+    exits: {
+      [key: string]: {
+        type: string;
+        description?: string;
+        extendedDescription?: string;
+        required?: boolean;
+      }
+    }
   }
 
   export class QueryBuilder extends Promise<any> {
